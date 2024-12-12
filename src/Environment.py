@@ -88,21 +88,19 @@ class Environment:
 
 
     def __str__(self):
-        str = ""
-        for i in range(0, self.tailleX) :
-            str = str + "\n"
-            for j in range(0, self.tailleY) :
-                b = True
-                if(self.grilleTres[i][j] != None) :
-                    b = False
-                    if(self.grilleTres[i][j].getType() == 1):
-                        str = str + " G "
+        str = "    0   1   2   3   4   5   6   7   8   9  10  11\n0 "
+        for i in range(self.tailleX) :
+            str+='|'
+            for j in range(self.tailleY) :
+                if self.grilleTres[i][j]:
+                    if self.grilleTres[i][j].getType() == 1:
+                        str += " G "
                     else :
-                        str = str + " S "
-                if(self.grilleAgent[i][j] != None) :
-                    str = str + " A "
-                    b = False
-                if b :
-                    str = str + " - "
-                str = str + "|"
+                        str += " S "
+                elif self.grilleAgent[i][j]:
+                    str += " A "
+                else:
+                    str += " - "
+                str += "|"
+            str += f"\n{i+1} " if (i+1)//10 < 1 else f"\n{i+1}"
         return str

@@ -105,15 +105,15 @@ def main():
 
 
     # make the agents execute their plans
-    for t in range(horizon):
-        if(t%10 == 0):
-            env.gen_new_treasures(random.randint(0,5), 7)
-        for a in lAg.values():
-            print(a)
+    # for t in range(horizon):
+    #     if(t%10 == 0):
+    #         env.gen_new_treasures(random.randint(0,5), 7)
+    #     for a in lAg.values():
+    #         print(a)
             #here the action of agent a at timestep t should be executed
 
     # print each agent's score
 
-
+    # print(env.grilleAgent)
     print(f"\n\n******* SCORE TOTAL : {env.getScore()}")
 main()
