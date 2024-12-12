@@ -8,7 +8,7 @@ class Environment:
     def __init__(self, tailleX:int, tailleY:int, posUnload:tuple):
         self.tailleX = tailleX
         self.tailleY = tailleY
-        self.grilleTres = [[None for _ in range(tailleY)] for _ in range(tailleX)] # locations of Treasures
+        self.grilleTres:list[list[Treasure]] = [[None for _ in range(tailleY)] for _ in range(tailleX)] # locations of Treasures
         self.grilleAgent = [[None for _ in range(tailleY)] for _ in range(tailleX)] # locations of agents
         self.posUnload = posUnload # a couple of positions x and y, where the agents can unload tresor
         self.score = 0 # quantity of treasure unload at the right place (posUnload)

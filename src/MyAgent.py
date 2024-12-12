@@ -54,6 +54,8 @@ class MyAgent:
     def send(self, idReceiver, textContent):
         self.env.send(self.id, idReceiver, textContent)
 
+    def getCapacity(self):
+        return 0
 
 
     def __str__(self):

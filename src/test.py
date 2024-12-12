@@ -2,18 +2,19 @@
 import pygame
 from draw import init_board, draw_board
 from Main import loadFileConfig
+import Environment
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+rect_size = 50
+env, lAg = loadFileConfig("env1.txt")
+screen = pygame.display.set_mode((env.tailleX*rect_size+env.tailleX, env.tailleY*rect_size+env.tailleY))
 clock = pygame.time.Clock()
 running = True
 dt = 0
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-rect_size = 50
 
-env, lAg = loadFileConfig("env1.txt")
 print(env)
         
 while running:
@@ -27,17 +28,17 @@ while running:
     # screen.fill("purple")
     # init_board(screen, rect_size)
     draw_board(screen, rect_size, env)
-    pygame.draw.circle(screen, "red", player_pos, 40)
+    # pygame.draw.circle(screen, "red", player_pos, 40)
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_z]:
-        player_pos.y -= 300 * dt
-    if keys[pygame.K_s]:
-        player_pos.y += 300 * dt
-    if keys[pygame.K_q]:
-        player_pos.x -= 300 * dt
-    if keys[pygame.K_d]:
-        player_pos.x += 300 * dt
+    # keys = pygame.key.get_pressed()
+    # if keys[pygame.K_z]:
+    #     player_pos.y -= 300 * dt
+    # if keys[pygame.K_s]:
+    #     player_pos.y += 300 * dt
+    # if keys[pygame.K_q]:
+    #     player_pos.x -= 300 * dt
+    # if keys[pygame.K_d]:
+    #     player_pos.x += 300 * dt
 
     # flip() the display to put your work on screen
     pygame.display.flip()

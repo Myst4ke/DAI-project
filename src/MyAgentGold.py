@@ -22,8 +22,10 @@ class MyAgentGold(MyAgent):
 
     #return the agent's type
     def getType(self):
-        return 0
+        return 1
 
+    def getCapacity(self):
+        return self.backPack
     # add some gold to the backpack of the agent (quantity t)
     # if the quantity exceeds the back pack capacity, the remaining is lost
     def addTreasure (self, t):

@@ -49,6 +49,8 @@ def loadFileConfig(nameFile) :
         if startsWith(match, 'AG'):
             id = next(generated_id)
             agent = agentConstructor[match[1]](id, *match[2:], env)
+            print(type(agent))
+            env.addAgent(agent)
             dictAgent[id] = agent
             
     env.addAgentSet(dictAgent)
@@ -116,4 +118,6 @@ def main():
 
     # print(env.grilleAgent)
     print(f"\n\n******* SCORE TOTAL : {env.getScore()}")
-main()
+
+if __name__ == "__main__":
+    main()
