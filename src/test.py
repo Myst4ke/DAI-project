@@ -11,9 +11,6 @@ env, lAg = loadFileConfig("env1.txt")
 screen = pygame.display.set_mode((env.tailleX*rect_size+env.tailleX, env.tailleY*rect_size+env.tailleY))
 clock = pygame.time.Clock()
 running = True
-dt = 0
-
-player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
 print(env)
         

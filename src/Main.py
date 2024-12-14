@@ -1,64 +1,25 @@
-from Environment import Environment
-from MyAgentGold import  MyAgentGold
-from MyAgentChest import MyAgentChest
-from MyAgentStones import MyAgentStones
-from Treasure import Treasure
+from config import loadFileConfig
 from draw import draw_board
+import pygame
+from time import sleep
 import random
-import re
 horizon = 100
 
-def startsWith(input:list, patern:str) -> bool:
-    """ Return True if input list starts with patern else False """
-    return True if input[0] == patern else False
 
-def id_generator(start:int = 0):
-    """ Yields id as 'angentN' """
-    while True:
-        yield f'agent{start}'
-        start += 1
 
-def loadFileConfig(nameFile) :
-    with open(nameFile, 'r') as f:
-        content = f.read()
-    
-    envConfigPattern = r'(\d+)\s+(\d+)'
-    treasurePattern = r'(tres):(or|pierres):(\d+):(\d+):(\d+)'
-    agentPattern = r'(AG):(ouvr|pierres|or):(\d+):(\d+)(?::(\d+))?'
-    patterns = re.compile(fr'^(?!#){envConfigPattern}|{treasurePattern}|{agentPattern}', re.MULTILINE)
-    matches = patterns.findall(content)
-    
-    matches = [[group for group in match if group != ''] for match in matches]
-    
-    tailleX, tailleY = map(int, matches[0])
-    cPosDepot = tuple(map(int, matches[1])) 
-    env = Environment(tailleX, tailleY, cPosDepot)
-    dictAgent = {}
-    generated_id = id_generator()
-    
-    agentConstructor = {
-        "or": MyAgentGold,
-        "pierres": MyAgentStones,
-        "ouvr": MyAgentChest
-    }
-    
-    for match in matches[2:]: #[2:] Removes the env size and depot coords
-        match = [int(x) if i > 1 else x for i,x in enumerate(match)]
-        
-        if startsWith(match, 'tres'):
-            env.addTreasure(Treasure(type = 1 if match[1] == 'or' else 2, value = match[-1]), *match[2:4])  
-        if startsWith(match, 'AG'):
-            id = next(generated_id)
-            agent = agentConstructor[match[1]](id, *match[2:], env)
-            print(type(agent))
-            env.addAgent(agent)
-            dictAgent[id] = agent
-            
-    env.addAgentSet(dictAgent)
-    return (env, dictAgent)
 
 def main():
+    pygame.init()
+    rect_size = 50
     env, lAg = loadFileConfig("env1.txt")
+    screen = pygame.display.set_mode((env.tailleX*rect_size+env.tailleX, env.tailleY*rect_size+env.tailleY))
+    clock = pygame.time.Clock()
+    
+    
+    draw_board(screen, rect_size, env)
+    sleep(2)
+    
+    # env, lAg = loadFileConfig("env1.txt")
     print(env)
     for a in lAg.values() :
         print(a)
@@ -66,10 +27,18 @@ def main():
     print(vars(lAg.get("agent0")))
     #Exemple where the agents move and open a chest and pick up the treasure
     lAg.get("agent0").move(7,4,7,3)
+    draw_board(screen, rect_size, env)
+    sleep(2)
     lAg.get("agent0").move(7, 3, 6, 3)
+    draw_board(screen, rect_size, env)
+    sleep(2)
     lAg.get("agent0").open()
+    draw_board(screen, rect_size, env)
+    sleep(2)
     print(env)
     lAg.get("agent0").move(6, 3, 7, 3)
+    draw_board(screen, rect_size, env)
+    sleep(2)
     print(env)
     lAg.get("agent4").move(6,7,6,6)
     lAg.get("agent4").move(6, 6, 6, 5)
@@ -102,6 +71,17 @@ def main():
     ##############################################
     ####### TODO #################################
     ##############################################
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                
+        # draw_board(screen, rect_size, env)
+        # pygame.display.flip()
+
+
+    pygame.quit()
 
     # make the agents plan their actions (off-line phase) TO COMPLETE
 

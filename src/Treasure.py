@@ -10,24 +10,24 @@ class Treasure:
         self.opened = False
         self.value = value
 
-    # return True if the chest is open, False otherwise
     def isOpen(self):
+        """ return True if the chest is open, False otherwise """
         return self.open
 
-    #open the Chest
     def openChest(self) :
+        """ open the Chest """
         print("ouverture du coffre")
-        self.open = True
+        self.opened = True
 
-    #return the type of treasure in the Chest
     def getType(self):
+        """ return the type of treasure in the Chest """
         return self.type
 
-    # return the quantity of treasure
     def getValue(self):
+        """ return the quantity of treasure """
         return self.value
 
-    #set the quantity of treasure to 0
     def resetValue(self):
+        """ set the quantity of treasure to 0 """
         self.value = 0
 
