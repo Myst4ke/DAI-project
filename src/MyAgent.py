@@ -1,7 +1,4 @@
-
 import Environment
-
-
 
 class MyAgent:
     def __init__(self, id, initX, initY, env:Environment):

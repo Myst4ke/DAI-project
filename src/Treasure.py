@@ -1,6 +1,5 @@
 
 class Treasure:
-
     def __init__(self, type:int, value:int):
         """ 
         params:
@@ -8,10 +7,8 @@ class Treasure:
             value: capacity of the Treasure
         """
         self.type = type # 
-        self.open = False
+        self.opened = False
         self.value = value
-
-
 
     # return True if the chest is open, False otherwise
     def isOpen(self):

@@ -3,6 +3,7 @@ from MyAgentGold import  MyAgentGold
 from MyAgentChest import MyAgentChest
 from MyAgentStones import MyAgentStones
 from Treasure import Treasure
+from draw import draw_board
 import random
 import re
 horizon = 100
@@ -84,7 +85,7 @@ def main():
     lAg.get("agent2").load(env) # Success !
     print(env)
 
-    env.gen_new_treasures(5, 7)
+    # env.gen_new_treasures(5, 7)
     print(env)
 
     #Example of unload tresor
@@ -97,7 +98,6 @@ def main():
 
     lAg.get("agent2").send("agent4", "Hello !")
     lAg.get("agent4").readMail()
-
 
     ##############################################
     ####### TODO #################################
