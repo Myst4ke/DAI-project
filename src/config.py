@@ -53,3 +53,27 @@ def loadFileConfig(nameFile) :
             
     env.addAgentSet(dictAgent)
     return (env, dictAgent)
+
+def loadMoveSet(nameFile, ) -> list:
+    with open(nameFile, 'r') as f:
+        content = f.read()
+    
+    coordsPattern = r'(?::\((\d+),(\d+)\):\((\d+),(\d+)\))?'
+    messagePattern = r'(?::(\w+\d))?(?::(.+))?'
+    patterns = re.compile(fr'(\w+\d):(\w+){coordsPattern}{messagePattern}', re.MULTILINE)
+    matches = patterns.findall(content)
+    # print(matches)
+    matches = [[group for group in match if group != ''] for match in matches]
+    print(matches)
+    return matches
+
+# def actionMoveset(matches, env:Environment, dictAgent:dict={}):
+#     moves = []
+#     for match in matches:
+#         agent_id, method_name, *args = match
+#         if method_name == "load":
+#             args=[env]
+#         # print(f"{agent_id}, {method_name}, args:{args}")
+#         moves.append((), args))
+#         print(dictAgent.get(agent_id),method_name, args)
+#     return moves 

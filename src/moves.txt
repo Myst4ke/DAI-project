@@ -1,0 +1,20 @@
+agent0:move:(7,4):(7,3)
+agent0:move:(7,3):(6,3)
+agent0:open
+agent0:move:(6,3):(7,3)
+agent4:move:(6,7):(6,6)
+agent4:move:(6,6):(6,5)
+agent4:move:(6,5):(6,4)
+agent4:move:(6,4):(6,3)
+agent4:load
+agent4:move:(6,3):(7,5)
+agent4:move:(6,3):(6,2)
+agent2:move:(5,2):(5,3)
+agent2:move:(5,3):(6,3)
+agent2:load
+agent2:move:(6,3):(5,2)
+agent2:move:(5,2):(5,1)
+agent2:move:(5,1):(5,0)
+agent2:unload
+agent2:send:agent4:Hello !
+agent4:readMail

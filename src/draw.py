@@ -79,10 +79,10 @@ def init_board(screen:pygame.display, rect_size):
 def draw_board(screen:pygame.display, rect_size, env:Environment):
     """ Draws the entire board using `draw_cell` and `draw_depot` """
     screen.fill("black")
+    _draw_depot(screen, rect_size, env)
     for x in range(env.tailleX):
         for y in range(env.tailleY):
             draw_cell(screen, env, rect_size, x, y)
             
-    _draw_depot(screen, rect_size, env)
     
     # sleep(2)
