@@ -65,6 +65,9 @@ def loadMoveSet(nameFile, ) -> list:
     # print(matches)
     matches = [[group for group in match if group != ''] for match in matches]
     print(matches)
+    for mat in matches:
+        if mat[1] == "move":
+            mat[2:] = map(int, mat[2:])
     return matches
 
 # def actionMoveset(matches, env:Environment, dictAgent:dict={}):

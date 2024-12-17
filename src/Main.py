@@ -107,10 +107,12 @@ def main():
             if method_name == "load":
                args = [env]
             getattr(lAg.get(agent_id), method_name)(*args)
-        print(env)    
-        draw_board(screen, rect_size, env)
-        sleep(2)   
-        cpt+=1  
+            # print(env)    
+            draw_board(screen, rect_size, env)
+            sleep(1)   
+            cpt+=1  
+        else:
+            running = False
         # draw_board(screen, rect_size, env)
         # pygame.display.flip()
 

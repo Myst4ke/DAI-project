@@ -57,7 +57,8 @@ def draw_emptyCell(screen:pygame.display, rect_size:int, x:int, y:int):
 
 def draw_cell(screen:pygame.display, env:Environment, rect_size, x, y):
     """ Draws agents and treasures """
-    draw_emptyCell(screen, rect_size, x, y)
+    if env.posUnload != (x,y):
+        draw_emptyCell(screen, rect_size, x, y)
     
     if treasure:=env.grilleTres[x][y]:
         _draw_treasure(screen, rect_size, x, y, treasure)
