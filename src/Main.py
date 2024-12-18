@@ -91,7 +91,7 @@ def main():
     ####### TODO #################################
     ##############################################
     
-    moves = loadMoveSet("moves.txt")
+    moves = loadMoveSet("moves.txt", env, lAg)
     
     draw_board(screen, rect_size, env)
     sleep(2)
@@ -103,11 +103,9 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
         if cpt < len(moves):
-            agent_id, method_name, *args = moves[cpt]
-            if method_name == "load":
-               args = [env]
-            getattr(lAg.get(agent_id), method_name)(*args)
-            # print(env)    
+            method, args = moves[cpt]
+            method(*args)
+                
             draw_board(screen, rect_size, env)
             sleep(1)   
             cpt+=1  
