@@ -10,32 +10,38 @@ class MyAgentStones(MyAgent):
         self.stone = 0
         self.backPack = capacity
 
-    # return quantity of precious stones collected and not unloaded yet
     def getTreasure(self):
+        """ return quantity of precious stones collected and not unloaded yet """
         return self.stone
 
-    # unload precious stones in the pack back at the current position
     def unload(self):
-        self.env.unload(self)
-        self.stone = 0
+        """ unload precious stones in the pack back at the current position """
+        if self.env.unload(self):
+            self.stone = 0
 
-    #return the agent's type
     def getType(self):
+        """ return the agent's type """
         return 2
     
     def getCapacity(self):
+        """ returns the backpack capcity of the agent """
         return self.backPack
-    # load the treasure at the current position
+    
+    
     def load(self,env):
+        """ load the treasure at the current position """
         env.load(self)
 
-    # add some precious stones to the backpack of the agent (quantity t)
-    # if the quantity exceeds the back pack capacity, the remaining is lost
-    def addTreasure(self, t):
-        if(self.stone + t <= self.backPack) :
-            self.stone = self.stone + t
+    
+    def addTreasure(self, treasureValue):
+        """ 
+        add some precious stones to the backpack of the agent (treasureValue)
+        if the quantity exceeds the back pack capacity, the remaining is lost
+        """
+        if self.gold + treasureValue <= self.backPack:
+            self.gold = self.gold + treasureValue
         else :
-            self.stone = self.backPack
+            self.gold = self.backPack
 
     def __str__(self):
         return f"Agent stones {MyAgent.__str__(self)}"

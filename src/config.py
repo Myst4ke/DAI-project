@@ -47,7 +47,7 @@ def loadFileConfig(nameFile) :
         if startsWith(match, 'AG'):
             id = next(generated_id)
             agent = agentConstructor[match[1]](id, *match[2:], env)
-            print(type(agent))
+            # print(type(agent))
             env.addAgent(agent)
             dictAgent[id] = agent
             
@@ -69,7 +69,7 @@ def loadMoveSet(nameFile, env, dictAgent) -> list:
     for mat in matches:
         agent_id, method_name, *args = mat
         if method_name == "move":
-            mat[2:] = map(int, mat[2:])
+            args = map(int, args)
         if method_name == "load":
             args = [env]
         moves.append((getattr(dictAgent.get(agent_id), method_name), args))

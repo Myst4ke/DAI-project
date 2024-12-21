@@ -12,7 +12,7 @@ class Treasure:
 
     def isOpen(self):
         """ return True if the chest is open, False otherwise """
-        return self.open
+        return self.opened
 
     def openChest(self) :
         """ open the Chest """

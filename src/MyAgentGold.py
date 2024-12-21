@@ -17,20 +17,23 @@ class MyAgentGold(MyAgent):
 
     def unload(self):
         """ unload gold in the pack back at the current position """
-        self.env.unload(self)
-        self.gold = 0
+        if self.env.unload(self):
+            self.gold = 0
 
-    #
     def getType(self):
         """ return the agent's type """
         return 1
 
     def getCapacity(self):
+        """ returns the backpack capcity of the agent """
         return self.backPack
     
-    # add some gold to the backpack of the agent (quantity t)
-    # if the quantity exceeds the back pack capacity, the remaining is lost
+    
     def addTreasure (self, treasureValue:int):
+        """ 
+        Add some gold to the backpack of the agent (treasureValue)
+        if the quantity exceeds the back pack capacity, the remaining is lost 
+        """
         if self.gold + treasureValue <= self.backPack:
             self.gold = self.gold + treasureValue
         else :
