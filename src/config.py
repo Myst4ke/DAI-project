@@ -54,7 +54,7 @@ def loadFileConfig(nameFile) :
     env.addAgentSet(dictAgent)
     return (env, dictAgent)
 
-def loadMoveSet(nameFile, env, dictAgent) -> list:
+def loadMoveSet(nameFile, env, dictAgent):
     with open(nameFile, 'r') as f:
         content = f.read()
     
@@ -65,13 +65,11 @@ def loadMoveSet(nameFile, env, dictAgent) -> list:
     
     matches = [[group for group in match if group != ''] for match in matches]
     
-    moves = []
     for mat in matches:
         agent_id, method_name, *args = mat
         if method_name == "move":
             args = map(int, args)
         if method_name == "load":
             args = [env]
-        moves.append((getattr(dictAgent.get(agent_id), method_name), args))
-    
-    return moves
+        yield lambda: getattr(dictAgent.get(agent_id), method_name)(*args)
+

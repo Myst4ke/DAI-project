@@ -33,8 +33,9 @@ class Environment:
 
     def move(self, agent:MyAgent, x1, y1, x2, y2):
         """ make the agent moves from (x1, y1) to (x2, y2) """
+        print(x1, y1, x2, y2)
         if x2 not in range(0, self.tailleX) or y2 not in range(0, self.tailleY) or x2 not in range(x1 - 1, x1 + 2) \
-                or y2 in range(y1 - 1, y1 + 2) or (x2,y2) != (x1,y1): # invalid move
+                or not y2 in range(y1 - 1, y1 + 2): # invalid move
             print("Env : invalid move")
             return False
         if not self.isAt(agent, x1, y1) or self.grilleAgent[x2][y2]: # position already occupied
