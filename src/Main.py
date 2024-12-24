@@ -7,9 +7,10 @@ horizon = 100
 rect_size = 50
 FPS = 1
 clock = pygame.time.Clock()
+SCROLL_SPEED = 0.5
 
 def main():
-    
+    global FPS
     pygame.init()
     env, lAg = loadFileConfig("env1.txt")
     screen = pygame.display.set_mode((env.tailleX*rect_size+env.tailleX, env.tailleY*rect_size+env.tailleY))
@@ -29,7 +30,11 @@ def main():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 pause = not pause
                 print("paused" if pause else "unpaused")   
-        
+            if event.type == pygame.MOUSEWHEEL:
+                # Increase or decrease FPS based on scroll direction
+                FPS = max(1, FPS + (event.y * SCROLL_SPEED))
+                print(f"FPS: {FPS}")
+                        
         if not pause:
             next(moves)()
             draw_board(screen, rect_size, env)
