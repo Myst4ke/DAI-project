@@ -4,56 +4,74 @@ from MyAgent import MyAgent
 from MyAgentGold import  MyAgentGold
 from MyAgentChest import MyAgentChest
 from MyAgentStones import MyAgentStones
+from Treasure import Treasure
 
-yellow = (252, 220, 56)
-blue = (33, 148, 255)
-red = (204, 8, 44)
-
-typeColorDict= {
-    1: yellow,
-    2: red,
-    MyAgentGold: yellow,
-    MyAgentStones: red,
-    MyAgentChest: blue
+COLORS = {
+    "yellow": (252, 220, 56),
+    "blue": (33, 148, 255),
+    "red": (204, 8, 44),
+    "white": (255, 255, 255),
+    "black": (0, 0, 0),
+    "green": (0, 255, 0)
 }
 
-def _draw_treasure(screen:pygame.display, rect_size, x, y, treasure): 
+TYPE_COLORS = {
+    1: COLORS["yellow"],  # Gold treasure
+    2: COLORS["red"],     # Stone treasure
+    MyAgentGold: COLORS["yellow"],
+    MyAgentStones: COLORS["red"],
+    MyAgentChest: COLORS["blue"]
+}
+
+def _get_cell_rect(x: int, y: int, rect_size) -> pygame.Rect:
+        """ Helper method to calculate cell rectangle """
+        return pygame.Rect(
+            1 + y * (rect_size + 1),
+            1 + x * (rect_size + 1),
+            rect_size,
+            rect_size
+        )
+
+
+def _draw_text(screen:pygame.display, text: str, rect: pygame.Rect, color="black"):
+        """ Helper method to draw centered text """
+        font = pygame.font.Font(None, 36)
+        text_surface = font.render(str(text), True, COLORS[color])
+        text_rect = text_surface.get_rect(center=rect.center)
+        screen.blit(text_surface, text_rect)
+
+
+def _draw_treasure(screen:pygame.display, rect_size, x, y, treasure:Treasure): 
     """ Draw a treasure as a colored square (color depends on treasure type) """
-    font = pygame.font.Font(None, 36)
-    pygame.draw.rect(screen, typeColorDict[treasure.type], my_rect:=pygame.Rect(1+y*rect_size+y, 1+x*rect_size+x, rect_size, rect_size))
-    if treasure.opened:
-        pygame.draw.rect(screen, "green", my_rect:=pygame.Rect(1+y*rect_size+y, 1+x*rect_size+x, rect_size, rect_size), width=2)
-    text = font.render(str(treasure.value), True, "black")
-    text_rect = text.get_rect(center=my_rect.center)
-    screen.blit(text, text_rect)
+    pygame.draw.rect(screen, TYPE_COLORS[treasure.type], my_rect:= _get_cell_rect(x, y, rect_size))
+    
+    if treasure.opened: # Draws green borders if opened
+        pygame.draw.rect(screen, "green", my_rect, width=3)
+    _draw_text(screen, str(treasure.value), my_rect)
+
 
 def _draw_agent(screen:pygame.display, rect_size, x, y, agent:MyAgent):
-    """ Draw a agent as a colored circle (color depends on agent type) """
-    font = pygame.font.Font(None, 36)
-    my_rect = pygame.Rect(1+y*rect_size+y, 1+x*rect_size+x, rect_size, rect_size)
-    pygame.draw.circle(screen, typeColorDict[type(agent)], (1+y*rect_size+y+(rect_size//2), 1+x*rect_size+x+(rect_size//2)), (rect_size-2)/2)
-    pygame.draw.circle(screen, "black", (1+y*rect_size+y+(rect_size//2), 1+x*rect_size+x+(rect_size//2)), (rect_size-2)/2,3)
+    """ Draw an agent as a colored circle (color depends on agent type) """
+    my_rect = _get_cell_rect(x, y, rect_size)
+    circle_center = (my_rect.centerx, my_rect.centery)
+    radius = (rect_size - 2) // 2
     
-    text = font.render(str(agent.getCapacity()-agent.getTreasure()), True, "black")#Prints the available capacity on the agent
-    text_rect = text.get_rect(center=my_rect.center)
-    screen.blit(text, text_rect)
+    pygame.draw.circle(screen, TYPE_COLORS[type(agent)], circle_center, radius)
+    pygame.draw.circle(screen, COLORS["black"], circle_center, radius, 3)
+    _draw_text(screen, str(agent.getCapacity()-agent.getTreasure()), my_rect)
+
 
 def _draw_depot(screen:pygame.display, rect_size, env:Environment):
     """ Draws the depot zone in green"""
-    font = pygame.font.Font(None, 36)
-    depot_x, depot_y = env.posUnload
-    pygame.draw.rect(screen, "GREEN", my_rect:=pygame.Rect(1+depot_y * rect_size+depot_y, 1+depot_x * rect_size+depot_x, rect_size, rect_size))
-    text = font.render("D", True, "black")
-    text_rect = text.get_rect(center=my_rect.center)
-    screen.blit(text, text_rect) 
-    
-    pygame.display.flip()
+    pygame.draw.rect(screen, "GREEN", my_rect:=_get_cell_rect(*env.posUnload, rect_size))
+    _draw_text(screen, "D", my_rect)
+
 
 
 def draw_emptyCell(screen:pygame.display, rect_size:int, x:int, y:int):
     """ Draws a empty cell """
-    pygame.draw.rect(screen, "white", pygame.Rect(1+y*rect_size+y, 1+x*rect_size+x, rect_size, rect_size))
-    pygame.display.flip()
+    pygame.draw.rect(screen, "white", _get_cell_rect(x,y, rect_size))
+
 
 def draw_cell(screen:pygame.display, env:Environment, rect_size, x, y):
     """ Draws agents and treasures """
@@ -64,8 +82,6 @@ def draw_cell(screen:pygame.display, env:Environment, rect_size, x, y):
         _draw_treasure(screen, rect_size, x, y, treasure)
     if agent:=env.grilleAgent[x][y]:
         _draw_agent(screen, rect_size, x, y, agent)
-            
-    pygame.display.flip()
 
 
 def init_board(screen:pygame.display, rect_size):
@@ -74,8 +90,8 @@ def init_board(screen:pygame.display, rect_size):
     for x in range(screen.get_width()//rect_size):
         for y in range(screen.get_height()//rect_size):
             draw_emptyCell(screen, rect_size, x, y)
-            
     pygame.display.flip()
+
   
 def draw_board(screen:pygame.display, rect_size, env:Environment):
     """ Draws the entire board using `draw_cell` and `draw_depot` """
@@ -84,6 +100,4 @@ def draw_board(screen:pygame.display, rect_size, env:Environment):
     for x in range(env.tailleX):
         for y in range(env.tailleY):
             draw_cell(screen, env, rect_size, x, y)
-            
-    
-    # sleep(2)
+    pygame.display.flip()        
