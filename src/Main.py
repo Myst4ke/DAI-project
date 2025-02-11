@@ -5,7 +5,7 @@ from time import sleep
 import random
 horizon = 100
 rect_size = 70
-FPS = 1
+FPS = 100
 clock = pygame.time.Clock()
 SCROLL_SPEED = 0.5
     
@@ -18,7 +18,7 @@ def main():
     moves = loadMoveSet("moves.txt", env, lAg)
     
     draw_board(screen, rect_size, env)
-    sleep(2)
+    # sleep(2)
     
     running = True
     pause = False
@@ -37,7 +37,7 @@ def main():
                 # Increase or decrease FPS based on scroll direction
                 FPS = max(1, FPS + (event.y * SCROLL_SPEED))
                 print(f"FPS: {FPS}")
-                     
+                    
         if not pause:
             for a in lAg.values():
                 a.next_move()
@@ -50,7 +50,11 @@ def main():
             t+=1
     
     pygame.quit()
-    print(f"\n\n******* SCORE TOTAL : {env.getScore()}")
+    moyMove = 0
+    for a in lAg.values():
+        moyMove += a.nbMove
+    with open('data.csv', "a") as f:
+        f.write(f"\n{env.getScore()[0]},{env.getScore()[1]},{round(moyMove/len(lAg.values()))}")
 
 if __name__ == "__main__":
     main()

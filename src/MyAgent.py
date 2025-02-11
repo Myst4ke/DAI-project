@@ -1,13 +1,5 @@
 import math
 import copy
-class Policy:
-    def __init__(self, env, type):
-        self.env = env
-        self.type = type
-        dir(MyAgent)
-
-    def next_move(self):
-        return 0,0
     
 def distance(p1:tuple, p2:tuple):
         return math.dist(p1, p2)
@@ -26,7 +18,7 @@ class MyAgent:
         self.stone = None
         self.gold = None
         self.backPack = None
-        # self.policy = Policy(env)
+        self.nbMove = 0
         
     def open(self):
         """ Opens a chest at agent location """
@@ -51,6 +43,7 @@ class MyAgent:
             if self.env.move(self, x1, y1, x2, y2) :
                 self.posX = x2
                 self.posY = y2
+                self.nbMove += 1
                 print("deplacement OK")
                 return 1
 
@@ -183,9 +176,6 @@ class MyAgent:
                 self.reservedChest = None
             else:
                 self.move(self.posX, self.posY, *self._nearestCell(*self.reservedChest))
-
-        # move vers le reserve
-        # si on est dessus 
 
     def __str__(self):
         return f"{self.id} ({self.posX} , {self.posY})"
