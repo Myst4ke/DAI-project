@@ -11,6 +11,7 @@ class Environment:
         self.grilleAgent:list[list[MyAgent]] = [[None for _ in range(tailleY)] for _ in range(tailleX)] # locations of agents
         self.posUnload = posUnload # a couple of positions x and y, where the agents can unload tresor
         self.score = 0 # quantity of treasure unload at the right place (posUnload)
+        self.lostScore = 0
         self.agentSet = dict() # the set of agents acting in the environment
 
     def addAgent(self, agent:MyAgent):
@@ -26,6 +27,8 @@ class Environment:
         """ add a treasure to the environment """
         if not self.grilleTres[x][y]:
             self.grilleTres[x][y] = tresor
+            for agent in self.agentSet.values():# update the agents knowledge
+                agent.updateTreasureMap(tresor, x , y)
 
     def isAt(self, agent:MyAgent, x, y):
         """ check whether the agent is at position (x,y) """
@@ -48,7 +51,7 @@ class Environment:
 
     def getScore(self):
         """ return the quanity of treasure unloaded at the collector place """
-        return self.score
+        return self.score,self.lostScore
 
     def unload(self, agent:MyAgent):
         """ make an agent unload his bakcpack """
@@ -72,9 +75,11 @@ class Environment:
     def load(self, agent:MyAgent):
         """ make an agent load some treasure """
         x, y = agent.getPos()
+        if self.grilleAgent[x][y] != agent or (x,y) == self.posUnload:
+            return False
         # Agent has same type as tres and tres is already opened
         if self.grilleTres[x][y].getType() == agent.getType() and self.grilleTres[x][y].opened:
-            agent.addTreasure(self.grilleTres[x][y].getValue())
+            self.lostScore += agent.addTreasure(self.grilleTres[x][y].getValue())
             self.grilleTres[x][y] = None
             print("Env : load OK")
             return True
@@ -91,10 +96,10 @@ class Environment:
         for _ in range(nb) :
             x = random.randint(0,self.tailleX - 1)
             y = random.randint(0,self.tailleY - 1)
-            t = random.randint(0,1)
-            v = random.randint(1, maxVal)
+            treasureType = random.randint(1,2)
+            treasureValue = random.randint(1, maxVal)
             print("Env : new tres at", x, y)
-            self.addTreasure(Treasure(t,v), x, y)
+            self.addTreasure(Treasure(treasureType, treasureValue), x, y)
 
     def __str__(self):
         str = "    0   1   2   3   4   5   6   7   8   9  10  11\n0 "

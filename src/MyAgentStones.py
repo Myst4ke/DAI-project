@@ -6,7 +6,7 @@ from MyAgent import MyAgent
 class MyAgentStones(MyAgent):
 
     def __init__(self, id,  initX, initY, capacity, env):
-        MyAgent.__init__(self, id, initX, initY, env)
+        MyAgent.__init__(self, id, initX, initY, agentType=2, env=env)
         self.stone = 0
         self.backPack = capacity
 
@@ -38,10 +38,13 @@ class MyAgentStones(MyAgent):
         add some precious stones to the backpack of the agent (treasureValue)
         if the quantity exceeds the back pack capacity, the remaining is lost
         """
-        if self.gold + treasureValue <= self.backPack:
-            self.gold = self.gold + treasureValue
+        lastStone = self.stone
+        if self.stone + treasureValue <= self.backPack:
+            self.stone = self.stone + treasureValue
+            return 0 # return lost value
         else :
-            self.gold = self.backPack
+            self.stone = self.backPack
+            return lastStone + treasureValue - self.backPack # return lost value
 
     def __str__(self):
         return f"Agent stones {MyAgent.__str__(self)}"

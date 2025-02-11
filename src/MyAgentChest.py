@@ -3,7 +3,7 @@ from MyAgent import MyAgent
 
 class MyAgentChest(MyAgent) :
     def __init__(self, id, initX, initY, env):
-        MyAgent.__init__(self, id, initX, initY, env)
+        MyAgent.__init__(self, id, initX, initY, agentType=0, env=env)
 
 
     def open(self):

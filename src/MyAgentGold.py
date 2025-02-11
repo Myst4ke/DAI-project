@@ -6,7 +6,7 @@ from MyAgent import MyAgent
 class MyAgentGold(MyAgent):
 
     def __init__(self, id, initX, initY, capacity, env):
-        MyAgent.__init__(self, id, initX, initY, env)
+        MyAgent.__init__(self, id, initX, initY, agentType=1, env=env)
         self.gold = 0 # the quantity of gold collected and not unloaded yet
         self.backPack = capacity #capacity of the agent's back pack
 
@@ -29,15 +29,19 @@ class MyAgentGold(MyAgent):
         return self.backPack
     
     
-    def addTreasure (self, treasureValue:int):
+    def addTreasure(self, treasureValue:int):
         """ 
         Add some gold to the backpack of the agent (treasureValue)
         if the quantity exceeds the back pack capacity, the remaining is lost 
         """
+        lastGold = self.gold
         if self.gold + treasureValue <= self.backPack:
             self.gold = self.gold + treasureValue
+            return 0 # return lost value
         else :
             self.gold = self.backPack
+            return lastGold + treasureValue - self.backPack # return lost value
+        
 
     def load(self,env):
         """ load the treasure at the current position """

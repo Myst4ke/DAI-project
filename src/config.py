@@ -16,6 +16,7 @@ def id_generator(start:int = 0):
         start += 1
 
 def loadFileConfig(nameFile) :
+    """ reads content of <nameFile> and creates env accordingly """
     with open(nameFile, 'r') as f:
         content = f.read()
     
@@ -34,9 +35,9 @@ def loadFileConfig(nameFile) :
     generated_id = id_generator()
     
     agentConstructor = {
+        "ouvr": MyAgentChest,
         "or": MyAgentGold,
         "pierres": MyAgentStones,
-        "ouvr": MyAgentChest
     }
     
     for match in matches[2:]: #[2:] Removes the env size and depot coords
@@ -55,6 +56,7 @@ def loadFileConfig(nameFile) :
     return (env, dictAgent)
 
 def loadMoveSet(nameFile, env, dictAgent):
+    """ reads content of <nameFile> and yields moves accordingly """
     with open(nameFile, 'r') as f:
         content = f.read()
     

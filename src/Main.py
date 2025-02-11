@@ -4,10 +4,11 @@ import pygame
 from time import sleep
 import random
 horizon = 100
-rect_size = 50
+rect_size = 70
 FPS = 1
 clock = pygame.time.Clock()
 SCROLL_SPEED = 0.5
+    
 
 def main():
     global FPS
@@ -21,7 +22,9 @@ def main():
     
     running = True
     pause = False
-    while running:
+    
+    t = 1
+    while running and t < horizon:
         clock.tick(FPS)  
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -34,28 +37,19 @@ def main():
                 # Increase or decrease FPS based on scroll direction
                 FPS = max(1, FPS + (event.y * SCROLL_SPEED))
                 print(f"FPS: {FPS}")
-                        
+                     
         if not pause:
-            next(moves)()
-            draw_board(screen, rect_size, env)
-        
+            for a in lAg.values():
+                a.next_move()
+            
+            draw_board(screen, rect_size, env) 
+            # next(moves)()
+            
+            if(t%10 == 0):
+                env.gen_new_treasures(random.randint(0,5), 7)
+            t+=1
     
     pygame.quit()
-
-    # make the agents plan their actions (off-line phase) TO COMPLETE
-
-
-    # make the agents execute their plans
-    # for t in range(horizon):
-    #     if(t%10 == 0):
-    #         env.gen_new_treasures(random.randint(0,5), 7)
-    #     for a in lAg.values():
-    #         print(a)
-            #here the action of agent a at timestep t should be executed
-
-    # print each agent's score
-
-    # print(env.grilleAgent)
     print(f"\n\n******* SCORE TOTAL : {env.getScore()}")
 
 if __name__ == "__main__":

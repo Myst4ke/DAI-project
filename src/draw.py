@@ -16,6 +16,7 @@ COLORS = {
 }
 
 TYPE_COLORS = {
+    0: COLORS["black"],
     1: COLORS["yellow"],  # Gold treasure
     2: COLORS["red"],     # Stone treasure
     MyAgentGold: COLORS["yellow"],
@@ -35,7 +36,7 @@ def _get_cell_rect(x: int, y: int, rect_size) -> pygame.Rect:
 
 def _draw_text(screen:pygame.display, text: str, rect: pygame.Rect, color="black"):
         """ Helper method to draw centered text """
-        font = pygame.font.Font(None, 36)
+        font = pygame.font.Font(None, 20)
         text_surface = font.render(str(text), True, COLORS[color])
         text_rect = text_surface.get_rect(center=rect.center)
         screen.blit(text_surface, text_rect)
@@ -58,7 +59,7 @@ def _draw_agent(screen:pygame.display, rect_size, x, y, agent:MyAgent):
     
     pygame.draw.circle(screen, TYPE_COLORS[type(agent)], circle_center, radius)
     pygame.draw.circle(screen, COLORS["black"], circle_center, radius, 3)
-    _draw_text(screen, str(agent.getCapacity()-agent.getTreasure()), my_rect)
+    _draw_text(screen, "A"+agent.id[-1]+": "+str(agent.getCapacity()-agent.getTreasure()), my_rect)
 
 
 def _draw_depot(screen:pygame.display, rect_size, env:Environment):
