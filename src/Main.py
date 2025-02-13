@@ -40,7 +40,7 @@ def main():
                     
         if not pause:
             for a in lAg.values():
-                a.next_move()
+                a.optiPolicy()
             
             draw_board(screen, rect_size, env) 
             # next(moves)()
@@ -53,8 +53,8 @@ def main():
     moyMove = 0
     for a in lAg.values():
         moyMove += a.nbMove
-    with open('data.csv', "a") as f:
+    with open('data/optiMargin2.csv', "a") as f:
         f.write(f"\n{env.getScore()[0]},{env.getScore()[1]},{round(moyMove/len(lAg.values()))}")
-
+    print(f"\n{env.getScore()[0]},{env.getScore()[1]},{round(moyMove/len(lAg.values()))}")
 if __name__ == "__main__":
     main()

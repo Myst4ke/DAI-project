@@ -1,6 +1,6 @@
 import math
 import copy
-    
+ERRORMARGIN = 2
 def distance(p1:tuple, p2:tuple):
         return math.dist(p1, p2)
     
@@ -19,6 +19,7 @@ class MyAgent:
         self.gold = None
         self.backPack = None
         self.nbMove = 0
+        self.otherReservedChest = []
         
     def open(self):
         """ Opens a chest at agent location """
@@ -109,6 +110,7 @@ class MyAgent:
         """ Update the reserved chest """
         self.reservedChest = self.closestChest[0][1] if len(self.closestChest) > 0 else None
         print(f'{self.id} : reserved chest {self.reservedChest}')
+        return bool(self.reservedChest) # False if None True otherwise
     
     def _sendReserve(self):
         """ send other agent to remove chest from their knowledge """
@@ -156,7 +158,7 @@ class MyAgent:
         # Si aucune case libre, rester sur place
         return self.posX, self.posY
     
-    def next_move(self):
+    def naivePolicy(self):
         self._deleteReservedChests()
         self._getClosestChest()
         if not self.reservedChest:
@@ -173,6 +175,99 @@ class MyAgent:
                 else: #agent stone/gold
                     self.load(self.env)
                     self.unload()
+                self.reservedChest = None
+            else:
+                self.move(self.posX, self.posY, *self._nearestCell(*self.reservedChest))
+    
+    # ======================== Opti functions for Opti Policy ========================
+    # 1 aller au dépot si tous les coffres sont trop importants
+    # 2 changer de chest si un est plus proche
+    
+    # 3 si un autre agent est plus proche et libre lui laisser
+    # 4 passer au dépot si il est sur le chemain/proche
+    def _getClosestChestOpti(self):
+        """ Update self.closestChest with nearest tresures, sorted by distance"""
+        try:
+            grilleTres = self._treasureMap
+            self.closestChest = []
+            for x in range(len(grilleTres)):
+                for y in range(len(grilleTres[x])):
+                    if grilleTres[x][y]:
+                        # print(f"self : {(self.type, x,y)} not in {self.otherReservedChest}")
+                        if (self.type, x,y) not in self.otherReservedChest: # Not a reserved chest
+                            if grilleTres[x][y].getType() == self.type and self.env.grilleTres[x][y].opened: # agent gold or stone and opened
+                                #if the chest value can fit in back pack
+                                # print(f"self.gold: {self.gold}, self.stone: {self.stone}, tresor value: {grilleTres[x][y].getValue()}, backPack: {self.backPack}")
+                                if (self.gold != None and grilleTres[x][y].getValue() <= self.backPack - self.gold + ERRORMARGIN) or (self.stone != None and grilleTres[x][y].getValue() <= self.backPack - self.stone + ERRORMARGIN):
+                                    self.closestChest.append((distance((x,y), (self.posX, self.posY)), (x,y)))
+                            elif self.type == 0 and not grilleTres[x][y].opened:  # agent chest and not opened
+                                self.closestChest.append((distance((x,y), (self.posX, self.posY)), (x,y)))
+            self.closestChest.sort(key=lambda x: x[0])
+            print(f'{self.id}({self.posX,self.posY}) : closest chests =  {self.closestChest}')
+        except AttributeError as e:
+            print(grilleTres[x][y])
+            print(grilleTres[x][y] == None)
+            raise(e)
+        
+    def _sendAddedReserved(self):
+        """ send other agent to remove chest from their knowledge """
+        print(f'{self.id} : sending added reserved chest')
+        for ag in self.env.agentSet.values():
+            # send reserve chest only to same agent type and only if not None
+            if ag.type == self.type and self.reservedChest: 
+                self.send(ag.id, f"add{(self.type,*self.reservedChest)}")    
+    
+    def _sendRemoveReserved(self):
+        """ send other agent to remove chest from their knowledge """
+        print(f'{self.id} : sending deleted reserved chest')
+        for ag in self.env.agentSet.values():
+            # send reserve chest only to same agent type and only if not None
+            if ag.type == self.type and self.reservedChest: 
+                self.send(ag.id, f"del{(self.type,*self.reservedChest)}")
+                
+    def _deleteReservedChestsOpti(self):
+        for _ in range(len(self.mailBox)):
+            id, text = self.readMail()
+            if id != self.id:
+                typ,x,y = map(int,text[3:][1:-1].split(",")) #removes "del"/"add" then parentheses and comma to get coordinates
+                if text.startswith("del"):
+                    self.otherReservedChest = [value for value in self.otherReservedChest if value != (typ,x,y)]
+                elif text.startswith("add"):
+                    self.otherReservedChest.append((typ,x,y))
+    
+    def optiPolicy(self):
+        self._deleteReservedChestsOpti()
+        self._getClosestChestOpti()
+        if not self.reservedChest:
+            if (self.gold or self.stone) and (self.gold == self.backPack or self.stone == self.backPack):
+                self.reservedChest = self.env.posUnload
+            else:
+                if self._reserveClosest():
+                    self._sendAddedReserved()
+                elif (self.gold and self.gold > 0) or (self.stone and self.stone > 0): # Is empty -> no chest can be fully collected
+                    self.reservedChest = self.env.posUnload
+                elif self.env.grilleTres[self.posX][self.posY] or (self.posX,self.posY) == self.env.posUnload:# if idle on chest or unload 
+                    # find an empty cell nearby (range 1)
+                    for x in range(self.posX-1, self.posX+2):
+                       for y in range(self.posY-1, self.posY+2): 
+                            if x in range(self.env.tailleX) and y in range(self.env.tailleY):
+                                if not self.env.grilleTres[x][y] and not self.env.grilleAgent[x][y] and (x,y) != self.env.posUnload:
+                                    self.reservedChest = (x,y)
+                                    break
+        else:
+            if bool(self.closestChest):
+                if self.closestChest[0] != self.reservedChest:
+                    self._sendRemoveReserved()
+                    self._reserveClosest()
+                    self._sendAddedReserved()
+            if (self.posX,self.posY) == self.reservedChest:
+                print(f"{self.id} at {self.posX,self.posY} wants to open/load chest at {self.reservedChest}")
+                if self.type == 0 : #agent chest
+                    self.open()
+                else: #agent stone/gold
+                    self.load(self.env)
+                    self.unload()
+                self.otherReservedChest.append((self.type,*self.reservedChest))
                 self.reservedChest = None
             else:
                 self.move(self.posX, self.posY, *self._nearestCell(*self.reservedChest))

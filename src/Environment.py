@@ -75,7 +75,7 @@ class Environment:
     def load(self, agent:MyAgent):
         """ make an agent load some treasure """
         x, y = agent.getPos()
-        if self.grilleAgent[x][y] != agent or (x,y) == self.posUnload:
+        if self.grilleAgent[x][y] != agent or (x,y) == self.posUnload or not self.grilleTres[x][y]:
             return False
         # Agent has same type as tres and tres is already opened
         if self.grilleTres[x][y].getType() == agent.getType() and self.grilleTres[x][y].opened:
