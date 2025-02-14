@@ -5,7 +5,7 @@ from time import sleep
 import random
 horizon = 100
 rect_size = 70
-FPS = 100
+FPS = 1
 clock = pygame.time.Clock()
 SCROLL_SPEED = 0.5
     
@@ -18,7 +18,7 @@ def main():
     moves = loadMoveSet("moves.txt", env, lAg)
     
     draw_board(screen, rect_size, env)
-    # sleep(2)
+    sleep(2)
     
     running = True
     pause = False
@@ -55,6 +55,9 @@ def main():
         moyMove += a.nbMove
     with open('data/optiMargin2.csv', "a") as f:
         f.write(f"\n{env.getScore()[0]},{env.getScore()[1]},{round(moyMove/len(lAg.values()))}")
+        
     print(f"\n{env.getScore()[0]},{env.getScore()[1]},{round(moyMove/len(lAg.values()))}")
+    
+    
 if __name__ == "__main__":
     main()

@@ -19,7 +19,7 @@ class MyAgent:
         self.gold = None
         self.backPack = None
         self.nbMove = 0
-        self.otherReservedChest = []
+        self.otherReservedChest = [] # Used in optiPolicy
         
     def open(self):
         """ Opens a chest at agent location """
@@ -180,11 +180,6 @@ class MyAgent:
                 self.move(self.posX, self.posY, *self._nearestCell(*self.reservedChest))
     
     # ======================== Opti functions for Opti Policy ========================
-    # 1 aller au dépot si tous les coffres sont trop importants
-    # 2 changer de chest si un est plus proche
-    
-    # 3 si un autre agent est plus proche et libre lui laisser
-    # 4 passer au dépot si il est sur le chemain/proche
     def _getClosestChestOpti(self):
         """ Update self.closestChest with nearest tresures, sorted by distance"""
         try:
@@ -267,7 +262,7 @@ class MyAgent:
                 else: #agent stone/gold
                     self.load(self.env)
                     self.unload()
-                self.otherReservedChest.append((self.type,*self.reservedChest))
+                self.otherReservedChest.append((self.type,*self.reservedChest))# inutile ?
                 self.reservedChest = None
             else:
                 self.move(self.posX, self.posY, *self._nearestCell(*self.reservedChest))
